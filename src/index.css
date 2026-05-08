@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0a0a0a;
+  --card: #111111;
+  --card-border: #1a2a1a;
+  --card-hover: #141f14;
+  --text: #a0a0a0;
+  --text-bright: #e0e0e0;
+  --green: #00ff41;
+  --green-dim: #00cc34;
+  --green-bg: rgba(0, 255, 65, 0.08);
+  --green-border: rgba(0, 255, 65, 0.2);
+  --cyan: #00e5ff;
+  --red: #ff4444;
+  --mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f0f0f;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a3a1a;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green-dim);
+}
+
+::selection {
+  background: var(--green-bg);
+  color: var(--green);
+}

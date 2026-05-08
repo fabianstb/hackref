@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/fabia/.claude/skills/web-artifacts-builder/hackref/**)",
+      "Bash(npx parcel *)",
+      "Bash(npx html-inline *)",
+      "PowerShell(\\(Get-Content \"C:\\\\Users\\\\fabia\\\\.claude\\\\skills\\\\web-artifacts-builder\\\\hackref\\\\bundle.html\"\\).Count)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\fabia\\\\.claude\\\\skills\\\\web-artifacts-builder\\\\hackref\\\\.claude\" 2>&1; echo done)",
+      "Bash(npm run *)"
+    ]
+  }
+}
