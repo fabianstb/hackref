@@ -438,10 +438,10 @@ export default function App() {
               fontFamily: 'inherit',
             }}
           >
-            HACKREF
+            O.C.R.A.
           </h1>
           <p style={{ color: '#2a3a2a', fontSize: '11px', margin: 0, letterSpacing: '3px' }}>
-            SECURITY COMMAND REFERENCE
+            OFFENSIVE COMMAND REFERENCE ARCHIVE
           </p>
         </div>
       )}
@@ -477,7 +477,7 @@ export default function App() {
               padding: 0,
             }}
           >
-            HACKREF
+            O.C.R.A.
           </button>
           {/* spacer — input will be placed here via absolute positioning trick */}
           <div style={{ flex: 1, maxWidth: '480px' }} />

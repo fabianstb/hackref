@@ -1,60 +1,58 @@
-# Pwnbook 💀
+# O.C.R.A. (Offensive Command Reference Archive)
 
-Referencia interactiva de comandos de seguridad y pentesting — todo en un solo archivo HTML autocontenido.
+Referencia interactiva de comandos de seguridad ofensiva y pentesting en un solo archivo HTML autocontenido.
 
-🔗 **[Abrir Pwnbook](https://fabianstb.github.io/hackref/)**
+[Abrir O.C.R.A.](https://fabianstb.github.io/hackref/)
 
 ---
 
-## ¿Qué es?
+## Que es
 
-Pwnbook es una aplicación web de una sola página que funciona como cheatsheet para pruebas de penetración. Incluye más de 60 herramientas y 600+ comandos organizados por categoría, con búsqueda instantánea y botón de copiar al portapapeles.
+O.C.R.A. (Offensive Command Reference Archive) es una aplicacion web de una sola pagina que funciona como cheatsheet para pruebas de penetracion. Incluye herramientas y comandos organizados por categoria, busqueda instantanea y boton de copiar al portapapeles.
 
-## Características
+## Caracteristicas
 
-- 🔍 **Búsqueda instantánea** — filtra herramientas por nombre, descripción o comando
-- 🗂️ **Filtros por categoría** — Reconocimiento, Fuzzing, Enumeración, Explotación, Post-Explotación, Red, Contraseñas
-- 📋 **Copiar al portapapeles** — un clic para copiar cualquier comando
-- 🌑 **Tema oscuro** — interfaz en estilo terminal con verde matrix
-- 📦 **Sin dependencias externas** — un solo archivo HTML autocontenido
+- Busqueda instantanea: filtra herramientas por nombre, descripcion o comando
+- Filtros por categoria: Reconocimiento, Fuzzing, Enumeracion, Explotacion, Post-Explotacion, Red, Contrasenas
+- Copiar al portapapeles: un clic para copiar cualquier comando
+- Tema oscuro: interfaz estilo terminal
+- Sin dependencias externas en produccion: un solo archivo HTML autocontenido
 
 ## Herramientas incluidas
 
-| Categoría | Herramientas |
+| Categoria | Herramientas |
 |-----------|-------------|
 | Fuzzing | ffuf, gobuster, wfuzz, feroxbuster, dirsearch |
 | Reconocimiento | nmap, masscan, theHarvester, amass, subfinder, assetfinder |
-| Enumeración | enum4linux, smbclient, crackmapexec, nikto, whatweb, kerbrute, bloodhound, wafw00f, dnsrecon |
-| Explotación | sqlmap, hydra, msfconsole, netcat, dalfox, searchsploit, LFI, SSTI, SSRF |
-| Post-Explotación | mimikatz, winPEAS, linPEAS, impacket, responder, PrintSpoofer, PowerUp, pspy, socat, chisel, ligolo-ng, Docker Escape |
+| Enumeracion | enum4linux, smbclient, crackmapexec, nikto, whatweb, kerbrute, bloodhound, wafw00f, dnsrecon |
+| Explotacion | sqlmap, hydra, msfconsole, netcat, dalfox, searchsploit, LFI, SSTI, SSRF, XXE, JWT |
+| Post-Explotacion | mimikatz, winPEAS, linPEAS, impacket, responder, PrintSpoofer, PowerUp, pspy, socat, chisel, ligolo-ng, Docker Escape |
 | Red | tcpdump, tshark, arp-scan, aircrack-ng, SSH Tunneling |
-| Contraseñas | john, hashcat, hashid, medusa |
+| Contrasenas | john, hashcat, hashid, medusa |
 | Cloud | PACU, cloud_enum/s3scanner |
 | Otros | MSSQL, Redis, httpx, nuclei, gitleaks, swaks, smtp-user-enum |
 
 ## Uso
 
 1. Abrir [https://fabianstb.github.io/hackref/](https://fabianstb.github.io/hackref/) en el navegador
-2. Escribir el nombre de la herramienta o técnica en el buscador
-3. O usar los filtros de categoría para explorar por tipo
+2. Escribir el nombre de la herramienta o tecnica en el buscador
+3. O usar los filtros de categoria para explorar por tipo
 4. Hacer clic en una tarjeta para expandir y ver los comandos
-5. Usar el botón **copiar** para copiar al portapapeles
+5. Usar el boton copiar para copiar al portapapeles
 
 ## Uso local
 
 ```bash
-# Clonar el repositorio
 git clone https://github.com/fabianstb/hackref.git
-
-# Abrir directamente en el navegador
-open index.html
+cd hackref
+npm install
+npm run dev
 ```
+
+Tambien puedes abrir directamente `index.html` en el navegador.
 
 ## Aviso legal
 
-> **SOLO PARA USO EN PRUEBAS AUTORIZADAS**
->
-> Esta herramienta es únicamente para fines educativos y pruebas de seguridad en sistemas con autorización explícita. El uso no autorizado contra sistemas ajenos puede ser ilegal. El autor no se responsabiliza del mal uso de esta información.
+**SOLO PARA USO EN PRUEBAS AUTORIZADAS**
 
----
-
+Esta herramienta es un archivo de referencia para fines educativos y pruebas de seguridad en sistemas con autorizacion explicita. El uso no autorizado contra sistemas ajenos puede ser ilegal. El autor no se responsabiliza del mal uso de esta informacion.
