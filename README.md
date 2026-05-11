@@ -1,14 +1,14 @@
-# O.C.R.A. (Offensive Command Reference Archive)
+# OCRA (Offensive Command Reference Archive)
 
 Referencia interactiva de comandos de seguridad ofensiva y pentesting en un solo archivo HTML autocontenido.
 
-[Abrir O.C.R.A.](https://fabianstb.github.io/hackref/)
+[Abrir OCRA](https://fabianstb.github.io/hackref/)
 
 ---
 
 ## Que es
 
-O.C.R.A. (Offensive Command Reference Archive) es una aplicacion web de una sola pagina que funciona como cheatsheet para pruebas de penetracion. Incluye herramientas y comandos organizados por categoria, busqueda instantanea y boton de copiar al portapapeles.
+OCRA (Offensive Command Reference Archive) es una aplicacion web de una sola pagina que funciona como cheatsheet para pruebas de penetracion. Incluye herramientas y comandos organizados por categoria, busqueda instantanea y boton de copiar al portapapeles.
 
 ## Caracteristicas
 

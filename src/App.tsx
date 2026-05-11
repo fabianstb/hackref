@@ -438,7 +438,7 @@ export default function App() {
               fontFamily: 'inherit',
             }}
           >
-            O.C.R.A.
+            OCRA
           </h1>
           <p style={{ color: '#2a3a2a', fontSize: '11px', margin: 0, letterSpacing: '3px' }}>
             OFFENSIVE COMMAND REFERENCE ARCHIVE
@@ -477,7 +477,7 @@ export default function App() {
               padding: 0,
             }}
           >
-            O.C.R.A.
+            OCRA
           </button>
           {/* spacer — input will be placed here via absolute positioning trick */}
           <div style={{ flex: 1, maxWidth: '480px' }} />
