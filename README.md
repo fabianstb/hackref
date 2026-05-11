@@ -58,4 +58,3 @@ open index.html
 
 ---
 
-Hecho con ❤️ para la comunidad de seguridad hispanohablante.
