@@ -1,14 +1,14 @@
-# HackRef 🔐
+# Pwnbook 💀
 
 Referencia interactiva de comandos de seguridad y pentesting — todo en un solo archivo HTML autocontenido.
 
-🔗 **[Abrir HackRef](https://fabianstb.github.io/hackref/)**
+🔗 **[Abrir Pwnbook](https://fabianstb.github.io/hackref/)**
 
 ---
 
 ## ¿Qué es?
 
-HackRef es una aplicación web de una sola página que funciona como cheatsheet para pruebas de penetración. Incluye más de 60 herramientas y 600+ comandos organizados por categoría, con búsqueda instantánea y botón de copiar al portapapeles.
+Pwnbook es una aplicación web de una sola página que funciona como cheatsheet para pruebas de penetración. Incluye más de 60 herramientas y 600+ comandos organizados por categoría, con búsqueda instantánea y botón de copiar al portapapeles.
 
 ## Características
 
