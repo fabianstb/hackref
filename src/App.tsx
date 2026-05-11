@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef } from 'react'
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { tools } from './data/tools'
 import type { Tool, Category } from './data/tools'
 import './index.css'
@@ -200,8 +200,36 @@ function ToolCard({
   )
 }
 
-function ExpandedPanel({ tool, onClose }: { tool: Tool; onClose: () => void }) {
-  const [activeCategory, setActiveCategory] = useState<Category>(tool.categories[0])
+function getMatchingCategory(tool: Tool, query: string) {
+  const q = query.trim().toLowerCase()
+  if (!q) return tool.categories[0]
+  return (
+    tool.categories.find(
+      cat =>
+        cat.name.toLowerCase().includes(q) ||
+        cat.commands.some(cmd => cmd.label.toLowerCase().includes(q) || cmd.cmd.toLowerCase().includes(q))
+    ) ?? tool.categories[0]
+  )
+}
+
+function getSearchScore(tool: Tool, query: string) {
+  const q = query.trim().toLowerCase()
+  if (!q) return 0
+  if (tool.id.toLowerCase() === q || tool.name.toLowerCase() === q) return 100
+  if (tool.id.toLowerCase().includes(q) || tool.name.toLowerCase().includes(q)) return 80
+  if (tool.tags.some(tag => tag.toLowerCase() === q)) return 70
+  if (tool.categories.some(cat => cat.name.toLowerCase() === q)) return 60
+  if (tool.description.toLowerCase().includes(q)) return 40
+  if (tool.categories.some(cat => cat.commands.some(cmd => cmd.label.toLowerCase().includes(q)))) return 30
+  return 10
+}
+
+function ExpandedPanel({ tool, query, onClose }: { tool: Tool; query: string; onClose: () => void }) {
+  const [activeCategory, setActiveCategory] = useState<Category>(() => getMatchingCategory(tool, query))
+
+  useEffect(() => {
+    setActiveCategory(getMatchingCategory(tool, query))
+  }, [tool, query])
 
   return (
     <div
@@ -321,11 +349,12 @@ export default function App() {
   const filteredTools = useMemo(() => {
     if (!showResults) return []
     let result = tools
-    if (activeFilter !== 'All') {
+    const hasQuery = query.trim() !== ''
+    if (!hasQuery && activeFilter !== 'All') {
       const tagKey = TAG_MAP[activeFilter]
       result = result.filter(t => t.tags.includes(tagKey))
     }
-    if (query.trim()) {
+    if (hasQuery) {
       const q = query.toLowerCase()
       result = result.filter(
         t =>
@@ -338,6 +367,7 @@ export default function App() {
               cat.commands.some(cmd => cmd.label.toLowerCase().includes(q) || cmd.cmd.toLowerCase().includes(q))
           )
       )
+      result = [...result].sort((a, b) => getSearchScore(b, query) - getSearchScore(a, query))
     }
     return result
   }, [query, activeFilter, showResults])
@@ -346,6 +376,17 @@ export default function App() {
     () => (selectedToolId ? tools.find(t => t.id === selectedToolId) ?? null : null),
     [selectedToolId]
   )
+
+  useEffect(() => {
+    if (!showResults || filteredTools.length === 0) {
+      setSelectedToolId(null)
+      return
+    }
+
+    if (!selectedToolId || !filteredTools.some(tool => tool.id === selectedToolId)) {
+      setSelectedToolId(filteredTools[0].id)
+    }
+  }, [filteredTools, selectedToolId, showResults])
 
   const handleSelectTool = (id: string) =>
     setSelectedToolId(prev => (prev === id ? null : id))
@@ -490,6 +531,7 @@ export default function App() {
             value={query}
             onChange={e => {
               setQuery(e.target.value)
+              setActiveFilter('All')
               setSelectedToolId(null)
             }}
             placeholder={showResults ? 'search...' : 'fuzzing, nmap, smb, privesc, xss...'}
@@ -632,6 +674,7 @@ export default function App() {
                   <ExpandedPanel
                     key={selectedTool.id}
                     tool={selectedTool}
+                    query={query}
                     onClose={() => setSelectedToolId(null)}
                   />
                 )}

