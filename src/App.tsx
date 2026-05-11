@@ -25,24 +25,24 @@ const TAG_MAP: Record<string, string> = {
 }
 
 const TAG_COLORS: Record<string, string> = {
-  fuzzing: '#00ff41',
-  recon: '#00e5ff',
-  enumeration: '#ffaa00',
+  fuzzing: '#66bfa6',
+  recon: '#9bdac9',
+  enumeration: '#f0c66a',
   exploitation: '#ff4444',
-  'post-exploitation': '#cc44ff',
-  network: '#44aaff',
-  password: '#ff6644',
-  web: '#555',
-  smb: '#555',
-  windows: '#555',
-  linux: '#555',
-  osint: '#555',
-  'active directory': '#777',
-  kerberos: '#777',
-  dns: '#777',
-  database: '#777',
-  gpu: '#777',
-  cloud: '#44ddaa',
+  'post-exploitation': '#b99bd8',
+  network: '#8ec7d8',
+  password: '#ef806d',
+  web: '#b9c9c6',
+  smb: '#b9c9c6',
+  windows: '#b9c9c6',
+  linux: '#b9c9c6',
+  osint: '#b9c9c6',
+  'active directory': '#c8d8d3',
+  kerberos: '#c8d8d3',
+  dns: '#c8d8d3',
+  database: '#c8d8d3',
+  gpu: '#c8d8d3',
+  cloud: '#66bfa6',
 }
 
 const TOTAL_COMMANDS = tools.reduce(
@@ -74,9 +74,9 @@ function CopyButton({ text }: { text: string }) {
     <button
       onClick={handleCopy}
       style={{
-        background: copied ? 'rgba(0,255,65,0.15)' : 'rgba(255,255,255,0.04)',
-        border: copied ? '1px solid rgba(0,255,65,0.4)' : '1px solid #2a2a2a',
-        color: copied ? '#00ff41' : '#555',
+        background: copied ? 'rgba(102,191,166,0.18)' : 'rgba(255,255,255,0.04)',
+        border: copied ? '1px solid rgba(102,191,166,0.45)' : '1px solid #6f8589',
+        color: copied ? '#66bfa6' : '#b9c9c6',
         padding: '3px 12px',
         fontSize: '11px',
         fontFamily: 'inherit',
@@ -104,14 +104,14 @@ function CommandRow({ label, cmd }: { label: string; cmd: string }) {
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
-        <span style={{ color: '#777', fontSize: '11px', lineHeight: '1.4', paddingTop: '3px' }}>{label}</span>
+        <span style={{ color: '#c8d8d3', fontSize: '11px', lineHeight: '1.4', paddingTop: '3px' }}>{label}</span>
         <CopyButton text={cmd} />
       </div>
       <code
         style={{
-          background: '#0a0a0a',
-          border: '1px solid #1a2a1a',
-          color: '#00e5ff',
+          background: '#263142',
+          border: '1px solid #4e6f78',
+          color: '#9bdac9',
           fontSize: '13px',
           padding: '8px 14px',
           borderRadius: '2px',
@@ -142,8 +142,8 @@ function ToolCard({
     <div
       onClick={onSelect}
       style={{
-        background: isSelected ? '#0d1a0d' : '#111111',
-        border: isSelected ? '1px solid #00ff41' : '1px solid #1a1a1a',
+        background: isSelected ? '#354b5f' : '#2f3d4f',
+        border: isSelected ? '1px solid #66bfa6' : '1px solid #4e6f78',
         borderRadius: '2px',
         cursor: 'pointer',
         padding: '14px 16px',
@@ -158,20 +158,20 @@ function ToolCard({
       }}
       onMouseLeave={e => {
         if (!isSelected) {
-          ;(e.currentTarget as HTMLElement).style.borderColor = '#1a1a1a'
-          ;(e.currentTarget as HTMLElement).style.background = '#111111'
+          ;(e.currentTarget as HTMLElement).style.borderColor = '#4e6f78'
+          ;(e.currentTarget as HTMLElement).style.background = '#2f3d4f'
         }
       }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span style={{ color: isSelected ? '#00ff41' : '#d0d0d0', fontSize: '14px', fontWeight: 700 }}>
+            <span style={{ color: isSelected ? '#66bfa6' : '#d0d0d0', fontSize: '14px', fontWeight: 700 }}>
               {tool.name}
             </span>
-            <span style={{ color: '#2a2a2a', fontSize: '10px' }}>{tool.categories.length}m</span>
+            <span style={{ color: '#6f8589', fontSize: '10px' }}>{tool.categories.length}m</span>
           </div>
-          <p style={{ color: '#555', fontSize: '11px', margin: '0 0 8px', lineHeight: '1.4' }}>
+          <p style={{ color: '#b9c9c6', fontSize: '11px', margin: '0 0 8px', lineHeight: '1.4' }}>
             {tool.description}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px' }}>
@@ -181,7 +181,7 @@ function ToolCard({
                 style={{
                   background: 'rgba(0,0,0,0.5)',
                   border: `1px solid ${TAG_COLORS[tag] ? TAG_COLORS[tag] + '33' : '#1f1f1f'}`,
-                  color: TAG_COLORS[tag] || '#444',
+                  color: TAG_COLORS[tag] || '#9fb3b0',
                   fontSize: '9px',
                   padding: '1px 5px',
                   borderRadius: '2px',
@@ -192,7 +192,7 @@ function ToolCard({
             ))}
           </div>
         </div>
-        <span style={{ color: isSelected ? '#00ff41' : '#333', fontSize: '14px', flexShrink: 0 }}>
+        <span style={{ color: isSelected ? '#66bfa6' : '#8ea3a0', fontSize: '14px', flexShrink: 0 }}>
           {isSelected ? '▼' : '›'}
         </span>
       </div>
@@ -216,7 +216,10 @@ function getSearchScore(tool: Tool, query: string) {
   const q = query.trim().toLowerCase()
   if (!q) return 0
   if (tool.id.toLowerCase() === q || tool.name.toLowerCase() === q) return 100
+  if (tool.categories.some(cat => cat.commands.some(cmd => cmd.cmd.toLowerCase() === q))) return 95
+  if (tool.categories.some(cat => cat.commands.some(cmd => cmd.cmd.toLowerCase().split(/\s+/).includes(q)))) return 90
   if (tool.id.toLowerCase().includes(q) || tool.name.toLowerCase().includes(q)) return 80
+  if (tool.categories.some(cat => cat.commands.some(cmd => cmd.cmd.toLowerCase().includes(q)))) return 75
   if (tool.tags.some(tag => tag.toLowerCase() === q)) return 70
   if (tool.categories.some(cat => cat.name.toLowerCase() === q)) return 60
   if (tool.description.toLowerCase().includes(q)) return 40
@@ -234,8 +237,8 @@ function ExpandedPanel({ tool, query, onClose }: { tool: Tool; query: string; on
   return (
     <div
       style={{
-        background: '#0c150c',
-        border: '1px solid #00ff41',
+        background: '#2b384a',
+        border: '1px solid #66bfa6',
         borderRadius: '2px',
         overflow: 'hidden',
         marginTop: '12px',
@@ -247,22 +250,22 @@ function ExpandedPanel({ tool, query, onClose }: { tool: Tool; query: string; on
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '14px 20px',
-          borderBottom: '1px solid #1a3a1a',
-          background: '#0a120a',
+          borderBottom: '1px solid #5f7f87',
+          background: '#263142',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ color: '#00ff41', fontSize: '18px', fontWeight: 900, letterSpacing: '1px' }}>
+          <span style={{ color: '#66bfa6', fontSize: '18px', fontWeight: 900, letterSpacing: '1px' }}>
             {tool.name}
           </span>
-          <span style={{ color: '#555', fontSize: '12px' }}>{tool.description}</span>
+          <span style={{ color: '#b9c9c6', fontSize: '12px' }}>{tool.description}</span>
         </div>
         <button
           onClick={onClose}
           style={{
             background: 'none',
-            border: '1px solid #2a2a2a',
-            color: '#555',
+            border: '1px solid #6f8589',
+            color: '#b9c9c6',
             padding: '4px 12px',
             fontSize: '11px',
             fontFamily: 'inherit',
@@ -275,8 +278,8 @@ function ExpandedPanel({ tool, query, onClose }: { tool: Tool; query: string; on
             ;(e.currentTarget as HTMLElement).style.color = '#ff4444'
           }}
           onMouseLeave={e => {
-            ;(e.currentTarget as HTMLElement).style.borderColor = '#2a2a2a'
-            ;(e.currentTarget as HTMLElement).style.color = '#555'
+            ;(e.currentTarget as HTMLElement).style.borderColor = '#6f8589'
+            ;(e.currentTarget as HTMLElement).style.color = '#b9c9c6'
           }}
         >
           ✕ close
@@ -287,8 +290,8 @@ function ExpandedPanel({ tool, query, onClose }: { tool: Tool; query: string; on
         style={{
           display: 'flex',
           overflowX: 'auto',
-          borderBottom: '1px solid #1a2a1a',
-          background: '#080f08',
+          borderBottom: '1px solid #4e6f78',
+          background: '#243044',
           padding: '0 4px',
         }}
       >
@@ -297,10 +300,10 @@ function ExpandedPanel({ tool, query, onClose }: { tool: Tool; query: string; on
             key={cat.name}
             onClick={() => setActiveCategory(cat)}
             style={{
-              background: activeCategory.name === cat.name ? 'rgba(0,255,65,0.06)' : 'none',
+              background: activeCategory.name === cat.name ? 'rgba(102,191,166,0.1)' : 'none',
               border: 'none',
-              borderBottom: activeCategory.name === cat.name ? '2px solid #00ff41' : '2px solid transparent',
-              color: activeCategory.name === cat.name ? '#00ff41' : '#444',
+              borderBottom: activeCategory.name === cat.name ? '2px solid #66bfa6' : '2px solid transparent',
+              color: activeCategory.name === cat.name ? '#66bfa6' : '#9fb3b0',
               padding: '10px 18px',
               fontSize: '11px',
               fontFamily: 'inherit',
@@ -315,11 +318,11 @@ function ExpandedPanel({ tool, query, onClose }: { tool: Tool; query: string; on
             }}
             onMouseLeave={e => {
               if (activeCategory.name !== cat.name)
-                (e.currentTarget as HTMLElement).style.color = '#444'
+                (e.currentTarget as HTMLElement).style.color = '#9fb3b0'
             }}
           >
             {cat.name}
-            <span style={{ color: '#333', marginLeft: '6px', fontSize: '10px' }}>{cat.commands.length}</span>
+            <span style={{ color: '#8ea3a0', marginLeft: '6px', fontSize: '10px' }}>{cat.commands.length}</span>
           </button>
         ))}
       </div>
@@ -412,7 +415,7 @@ export default function App() {
     <div
       style={{
         minHeight: '100vh',
-        background: '#0a0a0a',
+        background: '#263142',
         fontFamily: 'JetBrains Mono, Fira Code, Courier New, monospace',
       }}
     >
@@ -429,7 +432,7 @@ export default function App() {
         >
           <h1
             style={{
-              color: '#00ff41',
+              color: '#66bfa6',
               fontSize: '48px',
               fontWeight: 900,
               letterSpacing: '12px',
@@ -450,9 +453,9 @@ export default function App() {
       {showResults && (
         <div
           style={{
-            borderBottom: '1px solid #1a2a1a',
+            borderBottom: '1px solid #4e6f78',
             padding: '10px 20px',
-            background: '#0a0a0a',
+            background: '#263142',
             position: 'sticky',
             top: 0,
             zIndex: 100,
@@ -466,7 +469,7 @@ export default function App() {
             style={{
               background: 'none',
               border: 'none',
-              color: '#00ff41',
+              color: '#66bfa6',
               fontSize: '13px',
               fontWeight: 900,
               letterSpacing: '4px',
@@ -481,8 +484,8 @@ export default function App() {
           </button>
           {/* spacer — input will be placed here via absolute positioning trick */}
           <div style={{ flex: 1, maxWidth: '480px' }} />
-          <span style={{ color: '#222', fontSize: '10px', flexShrink: 0 }}>
-            <span style={{ color: '#333' }}>{filteredTools.length}</span>/{tools.length} ·{' '}
+          <span style={{ color: '#7b9290', fontSize: '10px', flexShrink: 0 }}>
+            <span style={{ color: '#8ea3a0' }}>{filteredTools.length}</span>/{tools.length} ·{' '}
             {TOTAL_COMMANDS} cmds
           </span>
         </div>
@@ -517,7 +520,7 @@ export default function App() {
               left: showResults ? '10px' : '16px',
               top: '50%',
               transform: 'translateY(-50%)',
-              color: '#00ff41',
+              color: '#66bfa6',
               fontSize: showResults ? '12px' : '16px',
               pointerEvents: 'none',
               opacity: 0.4,
@@ -538,8 +541,8 @@ export default function App() {
             autoFocus
             style={{
               width: '100%',
-              background: '#0d0d0d',
-              border: `1px solid ${showResults ? '#1a2a1a' : '#1a3a1a'}`,
+              background: '#2f3d4f',
+              border: `1px solid ${showResults ? '#4e6f78' : '#5f7f87'}`,
               color: '#e0e0e0',
               padding: showResults ? '7px 12px 7px 24px' : '14px 16px 14px 36px',
               fontSize: showResults ? '12px' : '15px',
@@ -549,8 +552,8 @@ export default function App() {
               boxSizing: 'border-box',
               transition: 'padding 0.15s ease, font-size 0.15s ease',
             }}
-            onFocus={e => (e.target.style.borderColor = 'rgba(0,255,65,0.45)')}
-            onBlur={e => (e.target.style.borderColor = showResults ? '#1a2a1a' : '#1a3a1a')}
+            onFocus={e => (e.target.style.borderColor = 'rgba(102,191,166,0.55)')}
+            onBlur={e => (e.target.style.borderColor = showResults ? '#4e6f78' : '#5f7f87')}
             autoComplete="off"
             spellCheck={false}
           />
@@ -574,8 +577,8 @@ export default function App() {
                 key={hint}
                 onClick={() => handleHint(hint)}
                 style={{
-                  background: 'rgba(0,255,65,0.04)',
-                  border: '1px solid #1a2a1a',
+                  background: 'rgba(102,191,166,0.08)',
+                  border: '1px solid #4e6f78',
                   color: '#3a4a3a',
                   padding: '4px 12px',
                   fontSize: '11px',
@@ -585,11 +588,11 @@ export default function App() {
                   transition: 'all 0.1s ease',
                 }}
                 onMouseEnter={e => {
-                  ;(e.currentTarget as HTMLElement).style.borderColor = '#00ff41'
-                  ;(e.currentTarget as HTMLElement).style.color = '#00ff41'
+                  ;(e.currentTarget as HTMLElement).style.borderColor = '#66bfa6'
+                  ;(e.currentTarget as HTMLElement).style.color = '#66bfa6'
                 }}
                 onMouseLeave={e => {
-                  ;(e.currentTarget as HTMLElement).style.borderColor = '#1a2a1a'
+                  ;(e.currentTarget as HTMLElement).style.borderColor = '#4e6f78'
                   ;(e.currentTarget as HTMLElement).style.color = '#3a4a3a'
                 }}
               >
@@ -597,7 +600,7 @@ export default function App() {
               </button>
             ))}
           </div>
-          <p style={{ color: '#1a2a1a', fontSize: '10px', marginTop: '28px', letterSpacing: '1px' }}>
+          <p style={{ color: '#4e6f78', fontSize: '10px', marginTop: '28px', letterSpacing: '1px' }}>
             {TOTAL_COMMANDS} COMMANDS · {tools.length} TOOLS
           </p>
         </div>
@@ -623,8 +626,8 @@ export default function App() {
                 style={{
                   background: 'none',
                   border: 'none',
-                  borderBottom: activeFilter === tab ? '2px solid #00ff41' : '2px solid transparent',
-                  color: activeFilter === tab ? '#00ff41' : '#383838',
+                  borderBottom: activeFilter === tab ? '2px solid #66bfa6' : '2px solid transparent',
+                  color: activeFilter === tab ? '#66bfa6' : '#9fb3b0',
                   padding: '9px 14px',
                   fontSize: '10px',
                   fontFamily: 'inherit',
@@ -637,7 +640,7 @@ export default function App() {
                   if (activeFilter !== tab) (e.currentTarget as HTMLElement).style.color = '#666'
                 }}
                 onMouseLeave={e => {
-                  if (activeFilter !== tab) (e.currentTarget as HTMLElement).style.color = '#383838'
+                  if (activeFilter !== tab) (e.currentTarget as HTMLElement).style.color = '#9fb3b0'
                 }}
               >
                 {tab.toUpperCase()}
@@ -647,12 +650,21 @@ export default function App() {
 
           <main style={{ padding: '16px 20px', maxWidth: '1400px', margin: '0 auto' }}>
             {filteredTools.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '60px 20px', color: '#2a2a2a', fontSize: '13px' }}>
-                <div style={{ fontSize: '20px', marginBottom: '10px', color: '#1a1a1a' }}>[ ]</div>
+              <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6f8589', fontSize: '13px' }}>
+                <div style={{ fontSize: '20px', marginBottom: '10px', color: '#4e6f78' }}>[ ]</div>
                 no tools found
               </div>
             ) : (
               <>
+                {selectedTool && (
+                  <ExpandedPanel
+                    key={selectedTool.id}
+                    tool={selectedTool}
+                    query={query}
+                    onClose={() => setSelectedToolId(null)}
+                  />
+                )}
+
                 <div
                   style={{
                     display: 'grid',
@@ -669,15 +681,6 @@ export default function App() {
                     />
                   ))}
                 </div>
-
-                {selectedTool && (
-                  <ExpandedPanel
-                    key={selectedTool.id}
-                    tool={selectedTool}
-                    query={query}
-                    onClose={() => setSelectedToolId(null)}
-                  />
-                )}
               </>
             )}
           </main>
@@ -687,7 +690,7 @@ export default function App() {
               borderTop: '1px solid #111',
               padding: '12px 20px',
               textAlign: 'center',
-              color: '#1a1a1a',
+              color: '#4e6f78',
               fontSize: '9px',
               letterSpacing: '1px',
               marginTop: '40px',

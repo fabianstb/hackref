@@ -9,17 +9,17 @@
 }
 
 :root {
-  --bg: #0a0a0a;
-  --card: #111111;
-  --card-border: #1a2a1a;
+  --bg: #263142;
+  --card: #2f3d4f;
+  --card-border: #4e6f78;
   --card-hover: #141f14;
   --text: #a0a0a0;
   --text-bright: #e0e0e0;
-  --green: #00ff41;
-  --green-dim: #00cc34;
+  --green: #66bfa6;
+  --green-dim: #4fa88e;
   --green-bg: rgba(0, 255, 65, 0.08);
   --green-border: rgba(0, 255, 65, 0.2);
-  --cyan: #00e5ff;
+  --cyan: #9bdac9;
   --red: #ff4444;
   --mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
 }
@@ -44,7 +44,7 @@ body {
   background: #0f0f0f;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1a3a1a;
+  background: #5f7f87;
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
